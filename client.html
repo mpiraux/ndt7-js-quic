@@ -14,7 +14,7 @@
             {
                 userAcceptedDataPolicy: true,
                 downloadworkerfile: "../src/ndt7-quic-download-worker.js",
-                uploadworkerfile: "../src/ndt7-upload-worker.js",
+                uploadworkerfile: "../src/ndt7-quic-upload-worker.js",
                 metadata: {
                     client_name: 'ndt7-html-example',
                 },
@@ -45,13 +45,13 @@
                     document.getElementById('download').innerHTML = 'Download: ' + clientGoodput.toFixed(2) + ' Mb/s';
                 },
                 uploadMeasurement: function (data) {
-                    if (data.Source === 'server') {
-                        document.getElementById('upload').innerHTML = 'Upload: ' + (data.Data.TCPInfo.BytesReceived /
+                    if (data.Source === 'server' && data.Data.QUICInfo !== undefined    ) {
+                        document.getElementById('upload').innerHTML = 'Upload: ' + (data.Data.QUICInfo.QUICStreamBytesReceived /
                             data.Data.TCPInfo.ElapsedTime * 8).toFixed(2) + ' Mb/s';;
                     }
                 },
                 uploadComplete: function(data) {
-                    const bytesReceived = data.LastServerMeasurement.TCPInfo.BytesReceived;
+                    const bytesReceived = data.LastServerMeasurement.QUICInfo.QUICStreamBytesReceived;
                     const elapsed = data.LastServerMeasurement.TCPInfo.ElapsedTime;
                     // bytes * bits/byte / microseconds = Mbps
                     const throughput =
